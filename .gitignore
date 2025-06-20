@@ -1,0 +1,20 @@
+# Environment and cache
+.env
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Data and DB files
+*.sqlite3
+*.db
+data/user_data.json
+
+# Virtual environment (if local venv used)
+codemate-env/
+
+# Streamlit config secrets
+.streamlit/secrets.toml
+
+# Generated PDF reports
+*.pdf
