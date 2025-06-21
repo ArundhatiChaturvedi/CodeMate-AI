@@ -2,21 +2,27 @@ import requests
 from bs4 import BeautifulSoup
 
 def fetch_atcoder_data(username):
-    url = f"https://atcoder.jp/users/{username}"
-    res = requests.get(url)
-    if res.status_code != 200:
-        return {"error": "Invalid handle or network error"}
-    
-    soup = BeautifulSoup(res.text, 'html.parser')
+    headers = {"User-Agent": "CodeMateAI/1.0"}
     try:
-        tables = soup.find_all("table")
-        stats_table = tables[1]  # User rating table
-        rating = stats_table.find_all("td")[1].text.strip()
-        highest = stats_table.find_all("td")[2].text.strip()
+        url = f"https://atcoder.jp/users/{username}"
+        res = requests.get(url, headers=headers, timeout=10)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, 'html.parser')
         
+        tables = soup.find_all("table")
+        if len(tables) < 2:
+            return {"error": "Profile data not found"}
+            
+        stats_table = tables[1]
+        tds = stats_table.find_all("td")
+        if len(tds) < 3:
+            return {"error": "Incomplete profile data"}
+            
         return {
-            "rating": rating,
-            "highest_rating": highest
+            "rating": tds[1].text.strip(),
+            "highest_rating": tds[2].text.strip()
         }
-    except:
-        return {"error": "Parsing error – layout may have changed"}
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Network error: {str(e)}"}
+    except Exception as e:
+        return {"error": f"Parsing error: {str(e)}"}

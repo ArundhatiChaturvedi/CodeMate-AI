@@ -1,7 +1,7 @@
 from fpdf import FPDF
 import json
 
-def generate_pdf():
+def generate_pdf(user_data):
     data = json.load(open("data/user_data.json"))
 
     pdf = FPDF()

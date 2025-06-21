@@ -115,9 +115,15 @@ with tab3:
 with tab4:
     st.header("Weekly Reminder + Progress Report")
     email = st.text_input("Enter your email:")
+    
     if st.button("Send Weekly Email"):
-        send_weekly_email(email)
-        st.success("Email sent!")
+        data = load_user_data()
+        roadmap = generate_roadmap(data) if data else "No roadmap available"
+        result = send_weekly_email(email, roadmap)
+        if result is True:
+            st.success("Email sent!")
+        else:
+            st.error(f"Failed to send email: {result}")
 
     if st.button("Generate PDF Report"):
         generate_pdf(load_user_data())

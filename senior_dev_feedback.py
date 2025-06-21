@@ -1,4 +1,4 @@
-def get_senior_dev_feedback(code, context=""):
+def review_code_as_senior(code, context=""):
     suggestions = []
 
     if "try:" in code and "except:" in code and "Exception" not in code:

@@ -11,7 +11,7 @@ PASSWORD = os.getenv("EMAIL_PASSWORD")
 def send_weekly_email(to_email, roadmap_text):
     msg = EmailMessage()
     msg.set_content(f"Hello! Here's your personalized weekly plan:\n\n{roadmap_text}")
-    msg['Subject'] = "Your CodeMate Weekly Plan 📘"
+    msg['Subject'] = "Your CodeMate Weekly Plan "
     msg['From'] = EMAIL
     msg['To'] = to_email
 

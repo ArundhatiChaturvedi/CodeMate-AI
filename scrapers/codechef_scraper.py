@@ -2,25 +2,27 @@ import requests
 from bs4 import BeautifulSoup
 
 def fetch_codechef_data(username):
-    url = f"https://www.codechef.com/users/{username}"
-    res = requests.get(url)
-    if res.status_code != 200:
-        return {"error": "Invalid handle or network error"}
-    
-    soup = BeautifulSoup(res.text, 'html.parser')
+    headers = {"User-Agent": "CodeMateAI/1.0"}
     try:
+        url = f"https://www.codechef.com/users/{username}"
+        res = requests.get(url, headers=headers, timeout=10)
+        res.raise_for_status()
+        soup = BeautifulSoup(res.text, 'html.parser')
+        
         rating_tag = soup.find("div", class_="rating-number")
         stars_tag = soup.find("span", class_="rating-star")
-        fully_solved_tag = soup.find_all("section", class_="rating-data-section problems-solved")[0]
+        solved_section = soup.find("section", class_="rating-data-section problems-solved")
         
-        rating = rating_tag.text.strip()
-        stars = stars_tag.text.strip()
-        solved = fully_solved_tag.find_all("h5")[0].text.strip()
+        if not all([rating_tag, stars_tag, solved_section]):
+            return {"error": "Profile data not found"}
         
+        solved = solved_section.find("h5").text if solved_section else "0"
         return {
-            "rating": rating,
-            "stars": stars,
-            "problems_solved": solved
+            "rating": rating_tag.text.strip(),
+            "stars": stars_tag.text.strip(),
+            "problems_solved": solved.replace("Fully Solved (", "").replace(")", "")
         }
-    except:
-        return {"error": "Parsing error – layout may have changed"}
+    except requests.exceptions.RequestException as e:
+        return {"error": f"Network error: {str(e)}"}
+    except Exception as e:
+        return {"error": f"Parsing error: {str(e)}"}

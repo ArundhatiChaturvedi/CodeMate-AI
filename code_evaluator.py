@@ -1,6 +1,9 @@
 def evaluate_code(code):
     feedback = []
 
+    if not code or len(code) > 10000:  
+        return ["Invalid code input"]
+    
     if len(code) > 500:
         feedback.append("Consider breaking down large functions into smaller ones.")
 
