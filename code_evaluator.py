@@ -1,4 +1,4 @@
-def evaluate_code_quality(code):
+def evaluate_code(code):
     feedback = []
 
     if len(code) > 500:
