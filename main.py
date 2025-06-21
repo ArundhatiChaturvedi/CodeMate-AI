@@ -127,7 +127,7 @@ with tab3:
     ]  
 
     selected_question = random.choice(interview_questions)
-i   if st.button("Simulate Interview"):
+    if st.button("Simulate Interview"):
         result = simulate_interview(selected_question, 30)
         st.write(result)
 
