@@ -5,7 +5,7 @@ def fetch_atcoder_data(username):
     headers = {"User-Agent": "CodeMateAI/1.0"}
     try:
         url = f"https://atcoder.jp/users/{username}"
-        res = requests.get(url, headers=headers, timeout=10)
+        res = requests.get(url, headers=headers, timeout=15)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, 'html.parser')
         
@@ -22,6 +22,9 @@ def fetch_atcoder_data(username):
             "rating": tds[1].text.strip(),
             "highest_rating": tds[2].text.strip()
         }
+    except requests.exceptions.Timeout:
+        print("Request timed out, retrying...")
+        return fetch_atcoder_data(username)
     except (requests.exceptions.RequestException, Exception) as e:
         print(f"Error fetching AtCoder data: {e}")
         return {}

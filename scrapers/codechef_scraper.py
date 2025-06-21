@@ -5,7 +5,7 @@ def fetch_codechef_data(username):
     headers = {"User-Agent": "CodeMateAI/1.0"}
     try:
         url = f"https://www.codechef.com/users/{username}"
-        res = requests.get(url, headers=headers, timeout=10)
+        res = requests.get(url, headers=headers, timeout=15)
         res.raise_for_status()
         soup = BeautifulSoup(res.text, 'html.parser')
         
@@ -22,6 +22,9 @@ def fetch_codechef_data(username):
             "stars": stars_tag.text.strip(),
             "problems_solved": solved.replace("Fully Solved (", "").replace(")", "")
         }
+    except requests.exceptions.Timeout:
+        print("Request timed out, retrying...")
+        return fetch_codechef_data(username)
     except (requests.exceptions.RequestException, Exception) as e:
         print(f"Error fetching Codechef data: {e}")
         return {}

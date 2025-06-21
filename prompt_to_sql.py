@@ -1,7 +1,22 @@
+from transformers import pipeline
+from accelerate import Accelerator
+import torch
+
+accelerator = Accelerator()
+
+@accelerator.on_main_process
+def load_model():
+    return pipeline("text2text-generation", 
+                   model="tscholak/text-to-sql",
+                   device_map="auto",
+                   torch_dtype=torch.float16)
+
 def prompt_to_sql(prompt):
-    if "users" in prompt.lower() and "signed up" in prompt:
-        return "SELECT * FROM users WHERE signup_date >= DATE_SUB(CURDATE(), INTERVAL 30 DAY);"
-    elif "top 10" in prompt.lower() and "products" in prompt:
-        return "SELECT * FROM products ORDER BY sales DESC LIMIT 10;"
-    else:
-        return "Sorry, I couldn't generate a query for that. Try rephrasing!"
+    full_prompt = f"""
+    Convert to SQL: {prompt}
+    Schema: users(id,name,signup_date), products(id,name,sales)
+    """
+    
+    with accelerator.local_main_process_first():
+        generator = load_model()
+        return generator(full_prompt, max_length=500)[0]['generated_text']

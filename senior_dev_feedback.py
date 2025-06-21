@@ -1,16 +1,30 @@
-def review_code_as_senior(code,context=None):
-    suggestions = []
+from transformers import pipeline
+import torch
+from accelerate import Accelerator
 
-    if "try:" in code and "except:" in code and "Exception" not in code:
-        suggestions.append("Consider catching specific exceptions for clarity.")
+accelerator = Accelerator()
 
-    if "global" in code:
-        suggestions.append("Avoid using global variables if possible.")
+@accelerator.on_main_process
+def load_model():
+    return pipeline("text-generation", 
+                   model="Salesforce/codegen2-1B",
+                   device_map="auto",
+                   torch_dtype=torch.float16)
 
-    if len(code.split('\n')) > 50:
-        suggestions.append("Code too long — consider modularizing it.")
-
-    if context:
-        suggestions.append(f"Contextual tip: For {context}, optimize your data structures.")
-
-    return suggestions if suggestions else ["Looks good! Consider peer review for minor improvements."]
+def review_code_as_senior(code, context=None):
+    prompt = f"""
+    As senior developer, review this code:
+    {code}
+    {f"Context: {context}" if context else ""}
+    Focus on:
+    - Security vulnerabilities
+    - Performance optimizations
+    - Code smells
+    - Best practices
+    Structure feedback with bullet points.
+    """
+    
+    with accelerator.local_main_process_first():
+        generator = load_model()
+        feedback = generator(prompt, max_length=1024, do_sample=True, temperature=0.5)[0]['generated_text']
+        return feedback.split("Focus on:")[-1].strip()
