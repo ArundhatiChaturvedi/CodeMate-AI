@@ -31,12 +31,16 @@ tab1, tab2, tab3, tab4 = st.tabs(["Connect Handles", "Analyze & Roadmap", "AI To
 # Tab 1: Connect Handles
 with tab1:
     st.header("Enter Your Coding Handles")
-    lc = st.text_input("LeetCode Username")
-    cf = st.text_input("Codeforces Handle")
-    gfg = st.text_input("GeeksforGeeks Username")
-    cc = st.text_input("CodeChef Username")
-    at = st.text_input("AtCoder Username")
-    hr = st.text_input("HackerRank Username")
+    def sanitize_username(input_str):
+        return input_str.split("/")[-1] if "/" in input_str else input_str
+
+    lc = sanitize_username(st.text_input("LeetCode Username"))
+    cf = sanitize_username(st.text_input("Codeforces Handle"))
+    gfg = sanitize_username(st.text_input("GeeksforGeeks Username"))
+    cc = sanitize_username(st.text_input("CodeChef Username"))
+    at = sanitize_username(st.text_input("AtCoder Username"))
+    hr = sanitize_username(st.text_input("HackerRank Username"))
+    st.markdown("**Note:** If you have a URL, paste it directly. Otherwise, just enter the username.")
 
     if st.button("Fetch Stats & Save"):
         user_stats = {
@@ -56,7 +60,7 @@ with tab2:
     if st.button("Generate Roadmap"):
         data = load_user_data()
         if data:
-            roadmap = generate_roadmap(data)
+            roadmap = generate_roadmap(data) 
             st.markdown(roadmap)
         else:
             st.warning("No user data found. Please connect handles first.")
@@ -115,6 +119,15 @@ with tab3:
 
     st.markdown("---")  
     st.subheader("Coding Interview Simulator")
+
+    # Initialize session state
+    if 'interview_active' not in st.session_state:
+        st.session_state.interview_active = False
+    if 'interview_question' not in st.session_state:
+        st.session_state.interview_question = ""
+    if 'interview_solution' not in st.session_state:
+        st.session_state.interview_solution = ""
+
     interview_questions = [
     "Reverse a linked list",
     "Find the middle element of a linked list",
@@ -124,7 +137,50 @@ with tab3:
     "Find the longest substring without repeating characters",
     "Rotate an array to the right by k steps",
     "Design a parking lot system"
-    ]  
+    ]
+
+if st.button("Simulate Interview"):
+    selected_question = random.choice(interview_questions)
+    st.session_state.interview_question = selected_question
+    result = simulate_interview(selected_question, 30)
+    st.session_state.interview_active = True
+    st.write(result)
+
+if st.session_state.interview_active:
+    st.markdown(f"**Current Question:** {st.session_state.interview_question}")
+    
+    # Solution editor
+    solution = st.text_area("Write your solution here:", 
+                           height=300,
+                           key="solution_editor")
+    st.session_state.interview_solution = solution
+    
+    col1, col2, col3 = st.columns(3)
+    with col1:
+        if st.button("Submit Solution"):
+            # Evaluate the solution
+            evaluation = evaluate_code(solution)
+            st.session_state.evaluation_result = "\n".join(evaluation)
+            st.success("Solution submitted for evaluation!")
+    with col2:
+        if st.button("End Interview"):
+            st.session_state.interview_active = False
+    with col3:
+        if st.button("Clear Solution"):
+            st.session_state.interview_solution = ""
+            st.experimental_rerun()
+    
+    # Display evaluation results if available
+    if hasattr(st.session_state, 'evaluation_result'):
+        st.subheader("Evaluation Feedback")
+        st.write(st.session_state.evaluation_result)
+        
+        # Performance benchmark option
+        if st.button("Benchmark Solution Performance"):
+            benchmark_result = benchmark_code(st.session_state.interview_solution)
+            st.write("Performance Metrics:")
+            st.json(benchmark_result)
+  
 
     selected_question = random.choice(interview_questions)
     if st.button("Simulate Interview"):

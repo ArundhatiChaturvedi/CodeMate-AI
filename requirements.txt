@@ -6,4 +6,4 @@ transformers
 scikit-learn
 email_validator
 python-dotenv
-
+torch
