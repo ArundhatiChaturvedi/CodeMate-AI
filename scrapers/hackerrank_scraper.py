@@ -15,7 +15,6 @@ def fetch_hackerrank_data(username):
             
         domains = [badge.text.strip() for badge in badges]
         return {"badges": domains}
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Network error: {str(e)}"}
-    except Exception as e:
-        return {"error": f"Parsing error: {str(e)}"}
+    except (requests.exceptions.RequestException, Exception) as e:
+        print(f"Error fetching Hackerrank data: {e}")
+        return {}

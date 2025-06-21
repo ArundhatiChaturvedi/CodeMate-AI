@@ -10,7 +10,7 @@ def scan_security_issues(code):
     if "input(" in code and "int(" not in code:
         issues.append("Validate all user inputs properly.")
 
-    if "open(" in code and "'w'" in code:
+    if "open(" in code and ("'w'" in code or '"w"' in code):
         issues.append("Ensure file writes are secure and avoid overwriting important files.")
 
     return issues if issues else ["No major security issues detected."]

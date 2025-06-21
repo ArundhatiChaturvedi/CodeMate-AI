@@ -1,4 +1,5 @@
 import streamlit as st
+import random
 from scrapers.leetcode_scraper import fetch_leetcode_data
 from scrapers.codeforces_scraper import fetch_codeforces_data
 from scrapers.gfg_scraper import fetch_gfg_data
@@ -15,7 +16,7 @@ from code_evaluator import evaluate_code
 from senior_dev_feedback import review_code_as_senior
 from prompt_to_sql import prompt_to_sql
 from code_translator import translate_code
-from prompt_to_code import generate_code_from_prompt
+from prompt_to_code import prompt_to_code as generate_code_from_prompt
 from security_scanner import scan_security_issues
 from coding_interview_simulator import simulate_interview
 from code_performance_benchmark import benchmark_code
@@ -82,8 +83,9 @@ with tab3:
 
         st.subheader("Code Review")
         code = st.text_area("Paste your code for review:")
+        context = st.text_input("Context (optional):")
         if st.button("Review as Senior Developer"):
-            st.markdown(review_code_as_senior(code))
+            st.markdown(review_code_as_senior(code,context))
 
         st.subheader("Security Scan")
         if st.button("Scan Code for Vulnerabilities"):
@@ -110,6 +112,25 @@ with tab3:
         if st.button("Benchmark Code"):
             result = benchmark_code(code)
             st.write(result)
+
+    st.markdown("---")  
+    st.subheader("Coding Interview Simulator")
+    interview_questions = [
+    "Reverse a linked list",
+    "Find the middle element of a linked list",
+    "Implement a stack using queues",
+    "Check if a binary tree is balanced",
+    "Implement an LRU cache",
+    "Find the longest substring without repeating characters",
+    "Rotate an array to the right by k steps",
+    "Design a parking lot system"
+    ]  
+
+    selected_question = random.choice(interview_questions)
+i   if st.button("Simulate Interview"):
+        result = simulate_interview(selected_question, 30)
+        st.write(result)
+
 
 # Tab 4: PDF & Email
 with tab4:

@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-EMAIL = os.getenv("EMAIL")
+EMAIL = os.getenv("EMAIL_ADDRESS")
 PASSWORD = os.getenv("EMAIL_PASSWORD")
 
 def send_weekly_email(to_email, roadmap_text):

@@ -4,6 +4,6 @@ beautifulsoup4
 fpdf
 transformers
 scikit-learn
-email-validator
+email_validator
 python-dotenv
 

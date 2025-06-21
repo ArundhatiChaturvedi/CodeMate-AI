@@ -12,7 +12,6 @@ def fetch_leetcode_data(username):
             return {"error": data.get("message", "User not found")}
             
         return data
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Network error: {str(e)}"}
-    except ValueError as e:
-        return {"error": f"Invalid JSON response: {str(e)}"}
+    except (requests.exceptions.RequestException, Exception) as e:
+        print(f"Error fetching Leetcode data: {e}")
+        return {}

@@ -22,7 +22,6 @@ def fetch_atcoder_data(username):
             "rating": tds[1].text.strip(),
             "highest_rating": tds[2].text.strip()
         }
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Network error: {str(e)}"}
-    except Exception as e:
-        return {"error": f"Parsing error: {str(e)}"}
+    except (requests.exceptions.RequestException, Exception) as e:
+        print(f"Error fetching AtCoder data: {e}")
+        return {}

@@ -1,4 +1,4 @@
-def review_code_as_senior(code, context=""):
+def review_code_as_senior(code,context=None):
     suggestions = []
 
     if "try:" in code and "except:" in code and "Exception" not in code:

@@ -22,7 +22,6 @@ def fetch_codechef_data(username):
             "stars": stars_tag.text.strip(),
             "problems_solved": solved.replace("Fully Solved (", "").replace(")", "")
         }
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Network error: {str(e)}"}
-    except Exception as e:
-        return {"error": f"Parsing error: {str(e)}"}
+    except (requests.exceptions.RequestException, Exception) as e:
+        print(f"Error fetching Codechef data: {e}")
+        return {}

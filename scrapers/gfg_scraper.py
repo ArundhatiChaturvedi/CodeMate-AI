@@ -14,7 +14,6 @@ def fetch_gfg_data(username):
             return {"error": "Profile data not found"}
             
         return {"solved_problems": solved.text.strip()}
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Network error: {str(e)}"}
-    except Exception as e:
-        return {"error": f"Parsing error: {str(e)}"}
+    except (requests.exceptions.RequestException, Exception) as e:
+        print(f"Error fetching GeeksForGeeks data: {e}")
+        return {}

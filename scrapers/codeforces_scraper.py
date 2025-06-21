@@ -17,7 +17,6 @@ def fetch_codeforces_data(handle):
             "maxRating": user_info.get("maxRating", "N/A"),
             "rank": user_info.get("rank", "N/A")
         }
-    except requests.exceptions.RequestException as e:
-        return {"error": f"Network error: {str(e)}"}
-    except (KeyError, IndexError, ValueError) as e:
-        return {"error": f"Data parsing error: {str(e)}"}
+    except (requests.exceptions.RequestException, Exception) as e:
+        print(f"Error fetching Codeforces data: {e}")
+        return {}
