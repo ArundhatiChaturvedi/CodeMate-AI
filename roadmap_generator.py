@@ -13,7 +13,7 @@ def load_model():
                    device_map="auto",
                    torch_dtype=torch.float16)
 
-def generate_combined_roadmap(user_data):
+def generate_roadmap(user_data):
     prompt = f"""
     Analyze this coding profile: {user_data}
     
