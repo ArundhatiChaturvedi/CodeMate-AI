@@ -5,3 +5,5 @@ fpdf
 transformers
 scikit-learn
 email-validator
+python-dotenv
+
