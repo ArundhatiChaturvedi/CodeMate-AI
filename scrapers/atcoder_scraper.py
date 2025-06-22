@@ -11,20 +11,26 @@ def fetch_atcoder_data(username):
         
         tables = soup.find_all("table")
         if len(tables) < 2:
-            return {"error": "Profile data not found"}
+            return {}
             
         stats_table = tables[1]
         tds = stats_table.find_all("td")
         if len(tds) < 3:
-            return {"error": "Incomplete profile data"}
+            return {}
+        
+        # Extract rating and convert to solved count (approximation)
+        rating = tds[1].text.strip()
+        rating_num = int(rating) if rating.isdigit() else 0
+        solved_count = max(0, rating_num // 100)  # Rough estimate: rating/100 = problems solved
             
         return {
-            "rating": tds[1].text.strip(),
-            "highest_rating": tds[2].text.strip()
+            "rating": rating,
+            "highest_rating": tds[2].text.strip(),
+            "solved": solved_count  
         }
     except requests.exceptions.Timeout:
-        print("Request timed out, retrying...")
-        return fetch_atcoder_data(username)
+        print("AtCoder request timed out")
+        return {}  
     except (requests.exceptions.RequestException, Exception) as e:
         print(f"Error fetching AtCoder data: {e}")
         return {}

@@ -11,13 +11,19 @@ def fetch_hackerrank_data(username):
         
         badges = soup.find_all("div", class_="hacker-badge")
         if not badges:
-            return {"error": "No badges found or private profile"}
-            
+            return {}
+        
         domains = [badge.text.strip() for badge in badges]
-        return {"badges": domains}
+        # Estimate solved count based on badges (rough approximation)
+        solved_count = len(domains) * 10  
+            
+        return {
+            "badges": domains,
+            "solved": solved_count  
+        }
     except requests.exceptions.Timeout:
-        print("Request timed out, retrying...")
-        return fetch_hackerrank_data(username)
+        print("HackerRank request timed out")
+        return {}  
     except (requests.exceptions.RequestException, Exception) as e:
         print(f"Error fetching Hackerrank data: {e}")
         return {}

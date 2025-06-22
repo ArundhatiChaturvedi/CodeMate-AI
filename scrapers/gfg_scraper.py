@@ -11,12 +11,18 @@ def fetch_gfg_data(username):
         
         solved = soup.find("div", class_="score_card_value")
         if not solved:
-            return {"error": "Profile data not found"}
+            return {}
+        
+        solved_text = solved.text.strip()
+        solved_count = int(solved_text) if solved_text.isdigit() else 0
             
-        return {"solved_problems": solved.text.strip()}
+        return {
+            "solved_problems": solved_text,
+            "solved": solved_count 
+        }
     except requests.exceptions.Timeout:
-        print("Request timed out, retrying...")
-        return fetch_gfg_data(username)
+        print("GFG request timed out")
+        return {} 
     except (requests.exceptions.RequestException, Exception) as e:
         print(f"Error fetching GeeksForGeeks data: {e}")
         return {}

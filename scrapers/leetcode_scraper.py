@@ -10,7 +10,7 @@ def fetch_leetcode_data(username):
         
         if data.get("status") == "error":
             return {"error": data.get("message", "User not found")}
-            
+        data["solved"] = data.get("totalSolved", 0)     
         return data
     except requests.exceptions.Timeout:
         print("Request timed out, retrying...")

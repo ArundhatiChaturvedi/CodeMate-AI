@@ -20,7 +20,8 @@ def fetch_codechef_data(username):
         return {
             "rating": rating_tag.text.strip(),
             "stars": stars_tag.text.strip(),
-            "problems_solved": solved.replace("Fully Solved (", "").replace(")", "")
+            "problems_solved": solved.replace("Fully Solved (", "").replace(")", ""),
+            "solved": int(solved_count) if solved_count.isdigit() else 0
         }
     except requests.exceptions.Timeout:
         print("Request timed out, retrying...")
