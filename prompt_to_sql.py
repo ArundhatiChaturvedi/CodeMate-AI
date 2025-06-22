@@ -7,9 +7,8 @@ accelerator = Accelerator()
 @accelerator.on_main_process
 def load_model():
     return pipeline("text2text-generation", 
-                   model="tscholak/text-to-sql",
-                   device_map="auto",
-                   torch_dtype=torch.float16)
+                   model="t5-small", 
+                   device_map="cpu")
 
 def prompt_to_sql(prompt):
     full_prompt = f"""

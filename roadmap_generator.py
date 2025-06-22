@@ -9,9 +9,8 @@ accelerator = Accelerator()
 @accelerator.on_main_process
 def load_model():
     return pipeline("text-generation", 
-                   model="Salesforce/codet5-base",
-                   device_map="auto",
-                   torch_dtype=torch.float16)
+                   model="Salesforce/codegen-350M-mono",  
+                   device_map="cpu")
 
 def generate_roadmap(user_data):
     prompt = f"""

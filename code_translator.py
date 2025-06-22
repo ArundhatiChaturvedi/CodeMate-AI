@@ -7,9 +7,8 @@ accelerator = Accelerator()
 @accelerator.on_main_process
 def load_model():
     return pipeline("text2text-generation", 
-                   model="facebook/nllb-200-distilled",
-                   device_map="auto",
-                   torch_dtype=torch.float16)
+                   model="t5-small",  
+                   device_map="cpu")
 
 def translate_code(code, from_lang="python", to_lang="java"):
     lang_map = {"python": "py", "java": "java", "cpp": "cpp", "javascript": "js"}

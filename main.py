@@ -85,7 +85,7 @@ with tab2:
     if st.button("Generate Roadmap"):
         data = load_user_data()
         if data:
-            roadmap = generate_combined_roadmap(data)
+            roadmap = generate_roadmap(data)
             
             # Topics summary (horizontal cards)
             st.subheader("Your Top Focus Areas")
